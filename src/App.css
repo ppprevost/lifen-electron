@@ -17,3 +17,8 @@
     transform: rotate(360deg);
   }
 }
+
+
+._loading_overlay_overlay{
+  background-color:grey
+}

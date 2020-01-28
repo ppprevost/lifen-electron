@@ -11,9 +11,8 @@ export function useFetch<T>(options = {} as Options) {
   const [url, setUrl] = useState("");
   const [body, setBody] = useState(undefined);
   const [getAllItems, setGetAllItems] = useState(false);
-  const setPostUrl = (url: string, body?: any, getAllItems = false) => {
+  const setPostUrl = (url: string, body?: any, getAllItems = true) => {
     setBody(body);
-
     setGetAllItems(getAllItems);
     return setUrl(url);
   };
@@ -23,7 +22,6 @@ export function useFetch<T>(options = {} as Options) {
       try {
         if (url) {
           dispatch({ type: "REQUEST" });
-          console.log(url, body);
           const fetched = await fetch(url, {
             ...options,
             body: JSON.stringify(body)
@@ -34,9 +32,9 @@ export function useFetch<T>(options = {} as Options) {
             throw new Error(await fetched.text());
           }
           const fetchItemsResponse = await fetchItems.json();
-          if (getAllItems) {
-            dispatch({ type: "GETITEMS", payload: fetchItemsResponse });
-          }
+
+          dispatch({ type: "GETITEMS", payload: fetchItemsResponse });
+
           const responsed = await fetched.json();
           dispatch({ type: "SUCCESS", payload: responsed });
         }

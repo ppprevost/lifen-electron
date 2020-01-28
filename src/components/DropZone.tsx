@@ -1,14 +1,11 @@
-import React, { useState, useCallback, useEffect } from "react";
+import React, { useState, useCallback } from "react";
 import { useDropzone } from "react-dropzone";
 import { withStyles } from "@material-ui/core/styles";
 import classnames from "classnames";
 import CloudUploadIcon from "@material-ui/icons/CloudUpload";
 import CloudUploadDone from "@material-ui/icons/CloudDone";
-import CircularProgress from "@material-ui/core/CircularProgress";
 import "typeface-roboto";
 import { useFetch } from "../hooks";
-import Snackbar from "@material-ui/core/Snackbar";
-import SnackBarContent from "./SnackBar";
 import { url } from "../App";
 
 const styles = withStyles({
@@ -68,11 +65,9 @@ const DropZone = ({
 }: any) => {
   const [maxSizeValue, setMaxSizeText] = useState(false);
   const [disabled, setDisabled] = useState(false);
-  const [message, setMessage] = useState("");
-  const [openSnackBar, setOpenSnackBar] = useState(false);
   const [fileData, setFileData] = useState<File | null>(null);
   const [content, setContent] = useState<string | null>(null);
-  const [{ successPost, error, getItems, isLoading }, doFetch] = useFetch({
+  const [{ successPost, error }, doFetch] = useFetch({
     method: "POST",
     headers: {
       Accept: fileData && fileData.type,
@@ -114,17 +109,6 @@ const DropZone = ({
     isDragReject
   } = useDropzone({ onDrop, accept, maxSize, disabled });
 
-  const onCloseSnackbar = () => {
-    setOpenSnackBar(false);
-  };
-
-  useEffect(() => {
-    if (getItems && getItems.entry.length) {
-      setOpenSnackBar(true);
-      setMessage("number of entry on the server : " + getItems.entry.length);
-    }
-  }, [getItems]);
-
   const manageDragClass = () => {
     if (!isDragAccept && !isDragReject && !isDragActive) {
       return classes.dropZone;
@@ -156,26 +140,18 @@ const DropZone = ({
           directly to the FHIR directory
         </p>
       )}
-      {fileData && successPost && successPost.name === fileData.name && (
-        <p>
-          <CloudUploadDone /> Upload Success!
-        </p>
-      )}
+      {fileData &&
+        successPost.map((post: { content: string; name: string }) => {
+          if (post.name === fileData.name) {
+            return (
+              <p key={post.name}>
+                <CloudUploadDone /> Upload Success!
+              </p>
+            );
+          }
+          return <div key={post.name}></div>;
+        })}
       {error && <p>An error occured with the server</p>}
-      {isLoading && <CircularProgress />}
-      {
-        <Snackbar
-          anchorOrigin={{
-            vertical: "bottom",
-            horizontal: "right"
-          }}
-          open={openSnackBar}
-          autoHideDuration={6000}
-          onClose={onCloseSnackbar}
-        >
-          <SnackBarContent message={message} />
-        </Snackbar>
-      }
     </div>
   );
 };
