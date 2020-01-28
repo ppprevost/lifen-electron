@@ -6,10 +6,10 @@ import CloudUploadIcon from "@material-ui/icons/CloudUpload";
 import CloudUploadDone from "@material-ui/icons/CloudDone";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import "typeface-roboto";
-//import { useFetch } from "../hooks";
-//import Snackbar from "@material-ui/core/Snackbar";
-//import SnackBarContent from "./SnackBar";
-//import { url } from "../App";
+import { useFetch } from "../hooks";
+import Snackbar from "@material-ui/core/Snackbar";
+import SnackBarContent from "./SnackBar";
+import { url } from "../App";
 
 const styles = withStyles({
   "@keyframes progress": {
@@ -72,14 +72,14 @@ const DropZone = ({
   const [openSnackBar, setOpenSnackBar] = useState(false);
   const [fileData, setFileData] = useState<File | null>(null);
   const [content, setContent] = useState<string | null>(null);
- /* const [{ successPost, error, getItems, isLoading }, doFetch] = useFetch({
+  const [{ successPost, error, getItems, isLoading }, doFetch] = useFetch({
     method: "POST",
     headers: {
       Accept: fileData && fileData.type,
       "Content-Type": fileData && fileData.type
     },
     body: JSON.stringify({ name: fileData && fileData.name, content })
-  });*/
+  });
   const onDrop = useCallback((acceptedFiles, rejectedFiles) => {
     if (rejectedFiles.length) {
       setMaxSizeText(true);
@@ -89,15 +89,15 @@ const DropZone = ({
     }
     acceptedFiles.forEach((file: File) => {
       setMaxSizeText(false);
+      console.log(file);
       setFileData(file);
       const reader = new FileReader();
-      console.log(file);
       reader.onabort = () => console.log("file reading was aborted");
       reader.onerror = () => console.log("file reading has failed");
       reader.onload = event => {
         if (event.target) {
           let binaryData = event.target.result as string;
-          //doFetch(url, { content: binaryData, name: file.name }, true);
+          doFetch(url, { content: binaryData, name: file.name }, true);
           setContent(binaryData);
         }
       };
@@ -118,12 +118,12 @@ const DropZone = ({
     setOpenSnackBar(false);
   };
 
-  /*useEffect(() => {
+  useEffect(() => {
     if (getItems && getItems.entry.length) {
       setOpenSnackBar(true);
       setMessage("number of entry on the server : " + getItems.entry.length);
     }
-  }, [getItems]);*/
+  }, [getItems]);
 
   const manageDragClass = () => {
     if (!isDragAccept && !isDragReject && !isDragActive) {
@@ -156,24 +156,26 @@ const DropZone = ({
           directly to the FHIR directory
         </p>
       )}
-      {/*{fileData && successPost.name === fileData.name && (
+      {fileData && successPost && successPost.name === fileData.name && (
         <p>
           <CloudUploadDone /> Upload Success!
         </p>
       )}
-      {error && <p>An error occured with the server</p>}*/}
-      {/*{isLoading && <CircularProgress />}*/}
-      {/*<Snackbar
-        anchorOrigin={{
-          vertical: "bottom",
-          horizontal: "right"
-        }}
-        open={openSnackBar}
-        autoHideDuration={6000}
-        onClose={onCloseSnackbar}
-      >
-        <SnackBarContent message={message} />
-      </Snackbar>*/}
+      {error && <p>An error occured with the server</p>}
+      {isLoading && <CircularProgress />}
+      {
+        <Snackbar
+          anchorOrigin={{
+            vertical: "bottom",
+            horizontal: "right"
+          }}
+          open={openSnackBar}
+          autoHideDuration={6000}
+          onClose={onCloseSnackbar}
+        >
+          <SnackBarContent message={message} />
+        </Snackbar>
+      }
     </div>
   );
 };
