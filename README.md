@@ -6,11 +6,12 @@ In the project directory, you can run:
 
 ### `yarn start`
 
-Runs the app in the development mode.<br />
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+Launch eletron in a window<br />
 
-The page will reload if you make edits.<br />
-You will also see any lint errors in the console.
+In the dropzone area, you can drop a pdf File.
+In the FHIR folder, you could add some pdf files and it will be directly uploaded on the server
+You can delete these pdf files and it will be automtic removed from the FHIR list
+
 
 ### `yarn test`
 

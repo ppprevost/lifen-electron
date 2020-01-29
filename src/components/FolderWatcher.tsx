@@ -83,7 +83,9 @@ const FolderWatcher = () => {
           flexWrap: "wrap"
         }}
       >
-        {!pdfFilesWatch && isLoading && "a new pdf is going to be upload"}
+        {pdfFilesWatch.length <= 0 && (
+          <p>No Pdf are available in the FHIR directory</p>
+        )}
         {pdfFilesWatch.map(pdfFile => {
           return (
             <div
