@@ -1,6 +1,6 @@
 export const initialState = {
   isLoading: false,
-  getItems: { entry: [] },
+  getItems: {},
   error: null,
   successPost: []
 };
