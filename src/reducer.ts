@@ -11,7 +11,6 @@ export const reducer = (
 ) => {
   switch (action.type) {
     case "GETITEMS":
-      console.log("get items");
       return { ...state, getItems: action.payload };
     case "REQUEST":
       return { ...state, isLoading: true, error: null };

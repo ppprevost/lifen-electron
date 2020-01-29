@@ -15,9 +15,9 @@ const Main = () => {
     setOpenSnackBar(false);
   };
   useEffect(() => {
-    if (getItems && getItems.entry.length) {
+    if (getItems && getItems.total) {
       setOpenSnackBar(true);
-      setMessage("number of entry on the server : " + getItems.entry.length);
+      setMessage("number of entry on the server : " + getItems.total);
     }
   }, [getItems]);
   useEffect(() => {}, [successPost]);

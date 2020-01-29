@@ -80,7 +80,7 @@ const DropZone = ({
       setMaxSizeText(true);
     }
     if (acceptedFiles.length) {
-      setDisabled(true);
+      setDisabled(false);
     }
     acceptedFiles.forEach((file: File) => {
       setMaxSizeText(false);

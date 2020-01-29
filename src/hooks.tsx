@@ -22,19 +22,17 @@ export function useFetch<T>(options = {} as Options) {
       try {
         if (url) {
           dispatch({ type: "REQUEST" });
-          const fetched = await fetch(url, {
+          const fetchedWait = fetch(url, {
             ...options,
             body: JSON.stringify(body)
           });
-          const fetchItems = await fetch(url);
-
+          const fetchItems = await fetch(url + "?_summary=count");
+          const fetched = await fetchedWait;
           if (fetched.status >= 400 || fetchItems.status >= 400) {
             throw new Error(await fetched.text());
           }
           const fetchItemsResponse = await fetchItems.json();
-
           dispatch({ type: "GETITEMS", payload: fetchItemsResponse });
-
           const responsed = await fetched.json();
           dispatch({ type: "SUCCESS", payload: responsed });
         }

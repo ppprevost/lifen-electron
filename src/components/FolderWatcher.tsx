@@ -2,8 +2,10 @@ import React, { useRef, useState } from "react";
 import { useEffect } from "react";
 import { extname } from "path";
 import { useFetch } from "../hooks";
-import { url } from "../App";
+import { url, useDataApi } from "../App";
+import CheckCircleSharpIcon from "@material-ui/icons/CheckCircleSharp";
 import PdfIcon from "@material-ui/icons/PictureAsPdf";
+import { green } from "@material-ui/core/colors";
 let chokidar = window.require("chokidar");
 let electronFs = window.require("fs");
 
@@ -13,6 +15,7 @@ interface pdfFilesInterface {
 }
 
 const FolderWatcher = () => {
+  const [{ successPost }] = useDataApi();
   const [{ isLoading }, doFetch] = useFetch({
     method: "POST",
     headers: {
@@ -73,6 +76,14 @@ const FolderWatcher = () => {
   useEffect(() => {
     StartWatcher("./FHIR");
   }, []);
+  const displayIconCheck = (name: string) => {
+    const success = successPost.find(
+      (elem: { content: string; name: string }) => elem.name === name
+    );
+    if (success) {
+      return true;
+    }
+  };
   return (
     <>
       <h2>FHIR directory</h2>
@@ -88,20 +99,27 @@ const FolderWatcher = () => {
         )}
         {pdfFilesWatch.map(pdfFile => {
           return (
-            <div
-              style={{
-                marginBottom: "15px",
-                padding: "5px",
-                width: "23%",
-                height: "100px",
-                overflow: "scroll",
-                overflowWrap: "break-word",
-                border: "1px solid grey"
-              }}
-              key={pdfFile.name}
-            >
-              <PdfIcon color={"error"} />
-              <p>{pdfFile.name}</p>
+            <div style={{ width: "23%", position: "relative" }}>
+              {displayIconCheck(pdfFile.name) && (
+                <CheckCircleSharpIcon
+                  style={{ color: green[500], position: "absolute", right: 0 }}
+                />
+              )}
+              <div
+                style={{
+                  marginBottom: "15px",
+                  padding: "5px",
+
+                  height: "100px",
+                  overflow: "scroll",
+                  overflowWrap: "break-word",
+                  border: "1px solid grey"
+                }}
+                key={pdfFile.name}
+              >
+                <PdfIcon color={"error"} />
+                <p>{pdfFile.name}</p>
+              </div>
             </div>
           );
         })}
